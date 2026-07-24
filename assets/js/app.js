@@ -200,6 +200,9 @@ function setupDragAndDrop() {
 function updateIssueStatus(id, newStatus) {
     const issue = issues.find(i => i.id === id);
     if (issue) {
+        if (issue.status !== newStatus) {
+            issue.previousStatus = issue.status;
+        }
         issue.status = newStatus;
         issue.updatedAt = new Date().toISOString();
         saveData();
@@ -306,6 +309,17 @@ function setupEventListeners() {
     document.getElementById('btn-export-json').addEventListener('click', exportJSON);
 
     // Details modal actions
+    document.getElementById('btn-reopen').addEventListener('click', () => {
+        const id = document.getElementById('detail-id').textContent;
+        const issue = issues.find(i => i.id === id);
+        if (issue) {
+            const targetStatus = issue.previousStatus && issue.previousStatus !== 'Corrigido' && issue.previousStatus !== 'Fechado' ? issue.previousStatus : 'Reportado';
+            updateIssueStatus(id, targetStatus);
+            document.getElementById('modal-details').classList.add('hidden');
+            showToast('Bug reaberto!', 'warning');
+        }
+    });
+
     document.getElementById('btn-mark-fixed').addEventListener('click', () => {
         const id = document.getElementById('detail-id').textContent;
         updateIssueStatus(id, 'Corrigido');
@@ -353,12 +367,15 @@ function openDetailModal(issue) {
     document.getElementById('detail-created').textContent = formatDateLong(issue.createdAt);
     document.getElementById('detail-updated').textContent = formatDateLong(issue.updatedAt);
 
-    // Hide/Show Mark as Fixed button
+    // Hide/Show Mark as Fixed and Reopen buttons
     const markFixedBtn = document.getElementById('btn-mark-fixed');
+    const reopenBtn = document.getElementById('btn-reopen');
     if (issue.status === 'Corrigido' || issue.status === 'Fechado') {
         markFixedBtn.style.display = 'none';
+        reopenBtn.style.display = 'inline-flex';
     } else {
         markFixedBtn.style.display = 'inline-flex';
+        reopenBtn.style.display = 'none';
     }
 
     document.getElementById('modal-details').classList.remove('hidden');
