@@ -788,3 +788,189 @@ hr {
         gap: 1rem;
     }
 }
+
+/* --- New Dynamic App Styles --- */
+.user-greeting {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-right: 10px;
+}
+
+.realtime-status {
+    font-size: 0.8rem;
+    color: var(--status-fixed);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+}
+.realtime-status.offline {
+    color: var(--status-reported);
+}
+
+.ml-auto { margin-left: auto; }
+.mt-2 { margin-top: 8px; }
+.p-0 { padding: 0 !important; }
+.p-4 { padding: 1.5rem !important; }
+
+/* Tabs */
+.modal-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--bg-board);
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    padding: 12px 20px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    border-radius: 0;
+}
+
+.tab-btn:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-column);
+}
+
+.tab-btn.active {
+    color: var(--accent-primary);
+    border-bottom-color: var(--accent-primary);
+}
+
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
+}
+
+/* Comments */
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.comment-card {
+    background-color: var(--bg-column);
+    padding: 12px 15px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+}
+
+.comment-author {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.comment-date {
+    color: var(--text-muted);
+}
+
+.comment-body {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+
+.comment-form textarea {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* History */
+.history-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.history-item {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.history-item:last-child {
+    border-bottom: none;
+}
+
+.history-date {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    margin-bottom: 4px;
+    display: block;
+}
+
+/* Users Table (Admin) */
+.table-container {
+    overflow-x: auto;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.users-table th, .users-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.users-table th {
+    font-weight: 600;
+    color: var(--text-secondary);
+    background-color: var(--bg-board);
+}
+
+.users-table tr:hover td {
+    background-color: var(--bg-column);
+}
+
+.role-badge {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.role-admin { background-color: rgba(220, 38, 38, 0.2); color: var(--priority-critical); }
+.role-developer { background-color: rgba(59, 130, 246, 0.2); color: var(--accent-primary); }
+.role-viewer { background-color: rgba(75, 85, 99, 0.2); color: var(--text-muted); }
+
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+.status-indicator.yes { background-color: var(--status-fixed); }
+.status-indicator.no { background-color: var(--status-reported); }
+
+.user-actions {
+    display: flex;
+    gap: 5px;
+}
+.user-actions button {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+}

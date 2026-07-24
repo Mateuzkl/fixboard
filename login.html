@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FixBoard - Login</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/auth.css">
+</head>
+<body class="dark-theme" data-theme="dark">
+
+    <!-- Tela de Carregamento Inicial (Sessão) -->
+    <div id="session-loading" class="full-screen-loader">
+        <i class="fas fa-circle-notch fa-spin"></i>
+        <p>Verificando sessão...</p>
+    </div>
+
+    <div class="auth-container hidden" id="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <img src="./assets/images/logo.svg" alt="FixBoard Logo" class="auth-logo">
+                <h1>FixBoard</h1>
+                <p>Bug Tracking & Fix Management</p>
+            </div>
+
+            <div id="auth-error-msg" class="auth-error hidden"></div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <div class="input-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" placeholder="seu@email.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Sua senha secreta" required>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="remember-me" checked>
+                        <span class="checkmark"></span>
+                        Manter conectado
+                    </label>
+                    <a href="#" id="btn-forgot-password" class="forgot-link">Esqueci minha senha</a>
+                </div>
+
+                <button type="submit" id="btn-login" class="primary-btn auth-btn">
+                    <span id="btn-login-text">Entrar</span>
+                    <i id="btn-login-loading" class="fas fa-spinner fa-spin hidden"></i>
+                </button>
+                
+                <button type="button" id="btn-register" class="secondary-btn auth-btn mt-10">Criar uma conta</button>
+            </form>
+            
+            <div id="approval-notice" class="auth-notice hidden">
+                <i class="fas fa-clock"></i>
+                Sua conta está aguardando aprovação do administrador.
+                <br>
+                <button id="btn-logout-notice" class="secondary-btn btn-small mt-10">Sair</button>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="./assets/js/supabase-config.js"></script>
+    <script src="./assets/js/auth.js"></script>
+</body>
+</html>

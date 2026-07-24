@@ -8,149 +8,158 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/auth.css">
 </head>
-<body class="dark-theme">
-    <!-- Header -->
-    <header class="app-header">
-        <div class="logo-area">
-            <img src="./assets/images/logo.svg" alt="FixBoard Logo" class="logo">
-            <div class="title-area">
-                <h1>FixBoard</h1>
-                <span>Bug Tracking & Fix Management</span>
+<body class="dark-theme" data-theme="dark">
+
+    <!-- Tela de Carregamento Inicial (Sessão) -->
+    <div id="session-loading" class="full-screen-loader">
+        <i class="fas fa-circle-notch fa-spin"></i>
+        <p>Verificando sessão e permissões...</p>
+    </div>
+
+    <div id="app-wrapper" class="hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <img src="./assets/images/logo.svg" alt="FixBoard Logo" class="logo">
+                <div class="title-area">
+                    <h1>FixBoard</h1>
+                    <span>Bug Tracking & Fix Management</span>
+                </div>
             </div>
-        </div>
 
-        <div class="stats-area">
-            <div class="stat-item"><span class="stat-label">Total:</span> <span id="stat-total">0</span></div>
-            <div class="stat-item"><span class="stat-label">Reportados:</span> <span id="stat-reported">0</span></div>
-            <div class="stat-item"><span class="stat-label">Em Correção:</span> <span id="stat-fixing">0</span></div>
-            <div class="stat-item"><span class="stat-label">Teste:</span> <span id="stat-testing">0</span></div>
-            <div class="stat-item stat-fixed-highlight"><span class="stat-label">Corrigidos:</span> <span id="stat-fixed">0</span></div>
-            <div class="progress-bar-container" title="Progresso geral de correção">
-                <div class="progress-bar" id="stat-progress" style="width: 0%"></div>
+            <div class="stats-area">
+                <div class="stat-item"><span class="stat-label">Total:</span> <span id="stat-total">0</span></div>
+                <div class="stat-item"><span class="stat-label">Reportados:</span> <span id="stat-reported">0</span></div>
+                <div class="stat-item"><span class="stat-label">Em Correção:</span> <span id="stat-fixing">0</span></div>
+                <div class="stat-item"><span class="stat-label">Teste:</span> <span id="stat-testing">0</span></div>
+                <div class="stat-item stat-fixed-highlight"><span class="stat-label">Corrigidos:</span> <span id="stat-fixed">0</span></div>
+                <div class="progress-bar-container" title="Progresso geral de correção">
+                    <div class="progress-bar" id="stat-progress" style="width: 0%"></div>
+                </div>
+                <div class="progress-text" id="stat-progress-text">0 de 0 bugs corrigidos — 0%</div>
             </div>
-            <div class="progress-text" id="stat-progress-text">0 de 0 bugs corrigidos — 0%</div>
-        </div>
 
-        <div class="actions-area">
-            <button id="btn-theme-toggle" class="icon-btn" title="Alternar Tema"><i class="fas fa-moon"></i></button>
-            <button id="btn-settings" class="icon-btn" title="Configurações e Dados"><i class="fas fa-cog"></i></button>
-            <button id="btn-new-bug" class="primary-btn"><i class="fas fa-plus"></i> Novo Bug</button>
-        </div>
-    </header>
-
-    <!-- Filters Bar -->
-    <section class="filters-bar">
-        <div class="filter-group search-group">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" id="search-input" placeholder="Pesquisar por título, id, tags, etc...">
-        </div>
-        
-        <div class="filter-group">
-            <select id="filter-status">
-                <option value="all">Todos os Status</option>
-                <option value="Reportado">Reportado</option>
-                <option value="Em análise">Em análise</option>
-                <option value="Em correção">Em correção</option>
-                <option value="Aguardando teste">Aguardando teste</option>
-                <option value="Corrigido">Corrigido</option>
-                <option value="Fechado">Fechado</option>
-            </select>
-        </div>
-
-        <div class="filter-group">
-            <select id="filter-priority">
-                <option value="all">Todas Prioridades</option>
-                <option value="Crítica">Crítica</option>
-                <option value="Alta">Alta</option>
-                <option value="Média">Média</option>
-                <option value="Baixa">Baixa</option>
-            </select>
-        </div>
-
-        <div class="filter-group">
-            <select id="filter-category">
-                <option value="all">Todas as Categorias</option>
-                <option value="Cliente">Cliente</option>
-                <option value="Servidor">Servidor</option>
-                <option value="NPC">NPC</option>
-                <option value="Protocolo">Protocolo</option>
-                <option value="Interface">Interface</option>
-                <option value="Outfit">Outfit</option>
-                <option value="Trade">Trade</option>
-                <option value="Refatoração">Refatoração</option>
-                <option value="Segurança">Segurança</option>
-                <option value="Performance">Performance</option>
-            </select>
-        </div>
-
-        <div class="filter-group">
-            <select id="filter-client">
-                <option value="all">Todos os Clientes</option>
-                <option value="Astra Client">Astra Client</option>
-                <option value="OTCv8">OTCv8</option>
-                <option value="Cliente CIP">Cliente CIP</option>
-                <option value="Todos os clientes">Todos os clientes</option>
-                <option value="Servidor">Servidor</option>
-            </select>
-        </div>
-
-        <button id="btn-clear-filters" class="secondary-btn" title="Limpar filtros">Limpar Filtros</button>
-    </section>
-
-    <!-- Board -->
-    <main class="board" id="board-container">
-        <!-- Columns will be mapped here -->
-        <div class="column" data-status="Reportado">
-            <div class="column-header status-reported">
-                <h2>Reportado</h2>
-                <span class="card-count">0</span>
+            <div class="actions-area">
+                <span id="user-display-name" class="user-greeting">Olá, Usuário</span>
+                <button id="btn-theme-toggle" class="icon-btn" title="Alternar Tema"><i class="fas fa-moon"></i></button>
+                <button id="btn-admin-panel" class="icon-btn hidden" title="Equipe"><i class="fas fa-users-cog"></i></button>
+                <button id="btn-logout" class="icon-btn" title="Sair"><i class="fas fa-sign-out-alt"></i></button>
+                <button id="btn-new-bug" class="primary-btn hidden"><i class="fas fa-plus"></i> Novo Bug</button>
             </div>
-            <div class="column-content" id="col-reportado"></div>
-        </div>
+        </header>
 
-        <div class="column" data-status="Em análise">
-            <div class="column-header status-analysis">
-                <h2>Em Análise</h2>
-                <span class="card-count">0</span>
+        <!-- Filters Bar -->
+        <section class="filters-bar">
+            <div class="filter-group search-group">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="search-input" placeholder="Pesquisar por título, tags, etc...">
             </div>
-            <div class="column-content" id="col-em-analise"></div>
-        </div>
+            
+            <div class="filter-group">
+                <select id="filter-status">
+                    <option value="all">Todos os Status</option>
+                    <option value="Reportado">Reportado</option>
+                    <option value="Em análise">Em análise</option>
+                    <option value="Em correção">Em correção</option>
+                    <option value="Aguardando teste">Aguardando teste</option>
+                    <option value="Corrigido">Corrigido</option>
+                    <option value="Fechado">Fechado</option>
+                </select>
+            </div>
 
-        <div class="column" data-status="Em correção">
-            <div class="column-header status-fixing">
-                <h2>Em Correção</h2>
-                <span class="card-count">0</span>
+            <div class="filter-group">
+                <select id="filter-priority">
+                    <option value="all">Todas Prioridades</option>
+                    <option value="Crítica">Crítica</option>
+                    <option value="Alta">Alta</option>
+                    <option value="Média">Média</option>
+                    <option value="Baixa">Baixa</option>
+                </select>
             </div>
-            <div class="column-content" id="col-em-correcao"></div>
-        </div>
 
-        <div class="column" data-status="Aguardando teste">
-            <div class="column-header status-testing">
-                <h2>Aguardando Teste</h2>
-                <span class="card-count">0</span>
+            <div class="filter-group">
+                <select id="filter-category">
+                    <option value="all">Todas as Categorias</option>
+                    <option value="Cliente">Cliente</option>
+                    <option value="Servidor">Servidor</option>
+                    <option value="NPC">NPC</option>
+                    <option value="Protocolo">Protocolo</option>
+                    <option value="Interface">Interface</option>
+                    <option value="Outfit">Outfit</option>
+                    <option value="Trade">Trade</option>
+                    <option value="Refatoração">Refatoração</option>
+                    <option value="Segurança">Segurança</option>
+                    <option value="Performance">Performance</option>
+                </select>
             </div>
-            <div class="column-content" id="col-aguardando-teste"></div>
-        </div>
 
-        <div class="column" data-status="Corrigido">
-            <div class="column-header status-fixed">
-                <h2>Corrigido</h2>
-                <span class="card-count">0</span>
+            <button id="btn-clear-filters" class="secondary-btn" title="Limpar filtros">Limpar</button>
+            
+            <div id="realtime-status" class="realtime-status ml-auto" title="Conexão com o banco de dados">
+                <i class="fas fa-wifi"></i> Online
             </div>
-            <div class="column-content" id="col-corrigido"></div>
-        </div>
+        </section>
 
-        <div class="column" data-status="Fechado">
-            <div class="column-header status-closed">
-                <h2>Fechado</h2>
-                <span class="card-count">0</span>
+        <!-- Board -->
+        <main class="board" id="board-container">
+            <!-- Columns will be mapped here -->
+            <div class="column" data-status="Reportado">
+                <div class="column-header status-reported">
+                    <h2>Reportado</h2>
+                    <span class="card-count">0</span>
+                </div>
+                <div class="column-content" id="col-reportado"></div>
             </div>
-            <div class="column-content" id="col-fechado"></div>
-        </div>
-    </main>
+
+            <div class="column" data-status="Em análise">
+                <div class="column-header status-analysis">
+                    <h2>Em Análise</h2>
+                    <span class="card-count">0</span>
+                </div>
+                <div class="column-content" id="col-em-analise"></div>
+            </div>
+
+            <div class="column" data-status="Em correção">
+                <div class="column-header status-fixing">
+                    <h2>Em Correção</h2>
+                    <span class="card-count">0</span>
+                </div>
+                <div class="column-content" id="col-em-correcao"></div>
+            </div>
+
+            <div class="column" data-status="Aguardando teste">
+                <div class="column-header status-testing">
+                    <h2>Aguardando Teste</h2>
+                    <span class="card-count">0</span>
+                </div>
+                <div class="column-content" id="col-aguardando-teste"></div>
+            </div>
+
+            <div class="column" data-status="Corrigido">
+                <div class="column-header status-fixed">
+                    <h2>Corrigido</h2>
+                    <span class="card-count">0</span>
+                </div>
+                <div class="column-content" id="col-corrigido"></div>
+            </div>
+
+            <div class="column" data-status="Fechado">
+                <div class="column-header status-closed">
+                    <h2>Fechado</h2>
+                    <span class="card-count">0</span>
+                </div>
+                <div class="column-content" id="col-fechado"></div>
+            </div>
+        </main>
+    </div>
 
     <!-- Modal for Bug Details -->
     <div id="modal-details" class="modal-overlay hidden">
@@ -162,71 +171,102 @@
                 </div>
                 <button class="close-modal"><i class="fas fa-times"></i></button>
             </div>
-            <div class="modal-body">
-                <div class="detail-grid">
-                    <div class="main-details">
-                        <div class="detail-section">
-                            <h3>Descrição</h3>
-                            <p id="detail-description"></p>
+            
+            <div class="modal-tabs">
+                <button class="tab-btn active" data-target="tab-details">Detalhes</button>
+                <button class="tab-btn" data-target="tab-comments">Comentários</button>
+                <button class="tab-btn" data-target="tab-history">Histórico</button>
+            </div>
+
+            <div class="modal-body p-0">
+                <!-- Tab Detalhes -->
+                <div id="tab-details" class="tab-content active p-4">
+                    <div class="detail-grid">
+                        <div class="main-details">
+                            <div class="detail-section">
+                                <h3>Descrição</h3>
+                                <p id="detail-description"></p>
+                            </div>
+                            <div class="detail-section">
+                                <h3>Comportamento Atual</h3>
+                                <p id="detail-current"></p>
+                            </div>
+                            <div class="detail-section">
+                                <h3>Comportamento Esperado</h3>
+                                <p id="detail-expected"></p>
+                            </div>
+                            <div class="detail-section">
+                                <h3>Passos para Reproduzir</h3>
+                                <p id="detail-steps"></p>
+                            </div>
+                            <div class="detail-section">
+                                <h3>Solução Aplicada / Commits</h3>
+                                <p id="detail-solution"></p>
+                            </div>
                         </div>
-                        <div class="detail-section">
-                            <h3>Comportamento Atual</h3>
-                            <p id="detail-current"></p>
-                        </div>
-                        <div class="detail-section">
-                            <h3>Comportamento Esperado</h3>
-                            <p id="detail-expected"></p>
-                        </div>
-                        <div class="detail-section">
-                            <h3>Passos para Reproduzir</h3>
-                            <p id="detail-steps"></p>
-                        </div>
-                        <div class="detail-section">
-                            <h3>Solução Aplicada / Commits</h3>
-                            <p id="detail-solution"></p>
+                        <div class="side-details">
+                            <div class="info-badge-group">
+                                <span class="info-label">Status:</span>
+                                <span id="detail-status" class="status-badge">Reportado</span>
+                            </div>
+                            <div class="info-badge-group">
+                                <span class="info-label">Prioridade:</span>
+                                <span id="detail-priority" class="priority-badge">Alta</span>
+                            </div>
+                            <div class="info-badge-group">
+                                <span class="info-label">Cliente:</span>
+                                <span id="detail-client">Servidor</span>
+                            </div>
+                            <div class="info-badge-group">
+                                <span class="info-label">Categoria:</span>
+                                <span id="detail-category">Refatoração</span>
+                            </div>
+                            <div class="info-badge-group">
+                                <span class="info-label">Responsável:</span>
+                                <span id="detail-assignee">-</span>
+                                <button id="btn-assign-me" class="secondary-btn btn-small mt-2 hidden">Assumir</button>
+                            </div>
+                            <div class="info-badge-group">
+                                <span class="info-label">Tags:</span>
+                                <div id="detail-tags" class="tags-container"></div>
+                            </div>
+                            <div class="info-badge-group dates">
+                                <small>Criado: <span id="detail-created"></span></small><br>
+                                <small>Atualizado: <span id="detail-updated"></span></small><br>
+                                <small id="detail-resolved-container" class="hidden">Resolvido: <span id="detail-resolved"></span></small>
+                            </div>
                         </div>
                     </div>
-                    <div class="side-details">
-                        <div class="info-badge-group">
-                            <span class="info-label">Status:</span>
-                            <span id="detail-status" class="status-badge">Reportado</span>
-                        </div>
-                        <div class="info-badge-group">
-                            <span class="info-label">Prioridade:</span>
-                            <span id="detail-priority" class="priority-badge">Alta</span>
-                        </div>
-                        <div class="info-badge-group">
-                            <span class="info-label">Cliente:</span>
-                            <span id="detail-client">Servidor</span>
-                        </div>
-                        <div class="info-badge-group">
-                            <span class="info-label">Categoria:</span>
-                            <span id="detail-category">Refatoração</span>
-                        </div>
-                        <div class="info-badge-group">
-                            <span class="info-label">Responsável:</span>
-                            <span id="detail-assignee">-</span>
-                        </div>
-                        <div class="info-badge-group">
-                            <span class="info-label">Tags:</span>
-                            <div id="detail-tags" class="tags-container"></div>
-                        </div>
-                        <div class="info-badge-group dates">
-                            <small>Criado em: <span id="detail-created"></span></small><br>
-                            <small>Atualizado em: <span id="detail-updated"></span></small>
-                        </div>
+                </div>
+
+                <!-- Tab Comentários -->
+                <div id="tab-comments" class="tab-content p-4">
+                    <div id="comments-list" class="comments-list">
+                        <!-- Comentários via JS -->
                     </div>
+                    <div class="comment-form hidden" id="comment-form-container">
+                        <textarea id="new-comment" rows="3" placeholder="Adicione um comentário..."></textarea>
+                        <button id="btn-add-comment" class="primary-btn mt-2"><i class="fas fa-paper-plane"></i> Enviar</button>
+                    </div>
+                </div>
+
+                <!-- Tab Histórico -->
+                <div id="tab-history" class="tab-content p-4">
+                    <ul id="history-list" class="history-list">
+                        <!-- Histórico via JS -->
+                    </ul>
                 </div>
             </div>
+
             <div class="modal-footer">
                 <div class="left-actions">
-                    <button id="btn-copy-md" class="secondary-btn"><i class="fab fa-markdown"></i> Copiar Markdown</button>
-                    <button id="btn-copy-info" class="secondary-btn"><i class="fas fa-copy"></i> Copiar Info</button>
+                    <button id="btn-copy-md" class="secondary-btn"><i class="fab fa-markdown"></i> Markdown</button>
+                    <button id="btn-copy-info" class="secondary-btn"><i class="fas fa-copy"></i> Copiar</button>
                 </div>
                 <div class="right-actions">
-                    <button id="btn-reopen" class="warning-btn" style="display: none;"><i class="fas fa-undo"></i> Reabrir</button>
-                    <button id="btn-mark-fixed" class="success-btn"><i class="fas fa-check"></i> Marcar Corrigido</button>
-                    <button id="btn-edit-from-detail" class="primary-btn"><i class="fas fa-edit"></i> Editar</button>
+                    <button id="btn-reopen" class="warning-btn hidden"><i class="fas fa-undo"></i> Reabrir</button>
+                    <button id="btn-mark-fixed" class="success-btn hidden"><i class="fas fa-check"></i> Marcar Corrigido</button>
+                    <button id="btn-edit-from-detail" class="primary-btn hidden"><i class="fas fa-edit"></i> Editar</button>
                     <button class="close-modal secondary-btn">Fechar</button>
                 </div>
             </div>
@@ -262,8 +302,8 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="form-description">Descrição *</label>
-                        <textarea id="form-description" rows="3" required></textarea>
+                        <label for="form-description">Descrição</label>
+                        <textarea id="form-description" rows="3"></textarea>
                     </div>
 
                     <div class="form-row">
@@ -295,6 +335,7 @@
                         <div class="form-group">
                             <label for="form-category">Categoria *</label>
                             <select id="form-category" required>
+                                <option value="Geral">Geral</option>
                                 <option value="Cliente">Cliente</option>
                                 <option value="Servidor">Servidor</option>
                                 <option value="NPC">NPC</option>
@@ -310,6 +351,7 @@
                         <div class="form-group">
                             <label for="form-client">Cliente Afetado</label>
                             <select id="form-client">
+                                <option value="Nenhum">Nenhum</option>
                                 <option value="Astra Client">Astra Client</option>
                                 <option value="OTCv8">OTCv8</option>
                                 <option value="Cliente CIP">Cliente CIP</option>
@@ -320,19 +362,15 @@
                     </div>
 
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="form-assignee">Responsável</label>
-                            <input type="text" id="form-assignee">
-                        </div>
                         <div class="form-group flex-2">
                             <label for="form-tags">Tags (separadas por vírgula)</label>
-                            <input type="text" id="form-tags" placeholder="ex: ui, bug-visual, login">
+                            <input type="text" id="form-tags" placeholder="ex: ui, bug-visual">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="form-solution">Solução / Commits</label>
-                        <textarea id="form-solution" rows="2" placeholder="Descreva a solução aplicada e/ou links para commits"></textarea>
+                        <textarea id="form-solution" rows="2"></textarea>
                     </div>
                 </form>
             </div>
@@ -343,20 +381,30 @@
         </div>
     </div>
 
-    <!-- Modal for Settings -->
-    <div id="modal-settings" class="modal-overlay hidden">
-        <div class="modal-content">
+    <!-- Modal de Usuários (Admin) -->
+    <div id="modal-users" class="modal-overlay hidden">
+        <div class="modal-content large-modal">
             <div class="modal-header">
-                <h2>Configurações e Dados</h2>
+                <h2>Gerenciamento da Equipe</h2>
                 <button class="close-modal"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body">
-                <div class="settings-actions">
-                    <button id="btn-restore-data" class="warning-btn"><i class="fas fa-undo"></i> Restaurar dados originais</button>
-                    <p class="settings-hint">Isso limpará suas edições locais (localStorage) e carregará os dados do arquivo issues.json padrão.</p>
-                    <hr>
-                    <button id="btn-export-json" class="secondary-btn"><i class="fas fa-download"></i> Exportar Dados (JSON)</button>
-                    <p class="settings-hint">Baixe o estado atual dos bugs para um arquivo local.</p>
+                <div class="table-container">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>E-mail</th>
+                                <th>Função</th>
+                                <th>Aprovado</th>
+                                <th>Ativo</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <div class="modal-footer">
@@ -368,6 +416,11 @@
     <!-- Notification Toast -->
     <div id="toast-container" class="toast-container"></div>
 
+    <!-- Scripts em ordem -->
+    <script src="./assets/js/supabase-config.js"></script>
+    <script src="./assets/js/auth.js"></script>
+    <script src="./assets/js/database.js"></script>
+    <script src="./assets/js/users.js"></script>
     <script src="./assets/js/app.js"></script>
 </body>
 </html>
