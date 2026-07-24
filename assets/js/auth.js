@@ -206,7 +206,10 @@ function showError(msg) {
         if (typeof msg === 'object') {
             displayMsg = msg.message || msg.error_description || JSON.stringify(msg);
         }
-        el.textContent = displayMsg || 'Erro de autenticação';
+        if (!displayMsg || displayMsg === '{}' || displayMsg === 'null' || displayMsg === 'undefined') {
+            displayMsg = 'E-mail ou senha incorretos. Verifique os dados digitados.';
+        }
+        el.textContent = displayMsg;
         el.classList.remove('hidden');
     }
 }
