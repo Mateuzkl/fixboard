@@ -1,53 +1,61 @@
-# FixBoard
+# FixBoard - Bug Tracking & Management (Supabase Edition)
 
-FixBoard é um painel moderno e estático para organização de bugs em colunas no estilo Trello.
-Foi construído utilizando apenas HTML5, CSS3, e JavaScript puro, lendo os dados de um arquivo JSON local.
+🚀 **[Acesse a Demonstração Online Aqui](https://mateuzkl.github.io/fixboard/)**
 
-## Como usar (Localmente)
+FixBoard é um painel moderno para organização de bugs em colunas no estilo Trello.
+Esta versão foi construída utilizando **HTML5**, **CSS3**, e **JavaScript puro**, integrando com o **Supabase** (Auth, Database, RLS, e Realtime) como backend, permitindo hospedagem totalmente gratuita no GitHub Pages.
 
-1. Clone ou baixe este repositório.
-2. Como os arquivos são estáticos, você pode abrir o `index.html` diretamente no seu navegador.
-3. Nota: Alguns navegadores podem bloquear o fetch de arquivos locais (`issues.json`) devido ao CORS. Recomenda-se utilizar uma extensão de servidor local (ex: Live Server no VSCode) ou rodar localmente com Python (`python -m http.server`).
+## Configuração do Supabase
 
-## Como publicar no GitHub Pages
+### 1. Criar Projeto
+1. Crie uma conta e um projeto gratuito no [Supabase](https://supabase.com).
+2. Vá em `Project Settings` -> `API`.
+3. Copie a **URL do Projeto** e a **anon public key**.
 
-O site funciona diretamente no GitHub Pages, sem necessidade de build.
+### 2. Configurar o Frontend
+1. Abra o arquivo `assets/js/supabase-config.js`.
+2. Substitua `COLOQUE_A_URL_AQUI` pela URL do projeto.
+3. Substitua `COLOQUE_A_CHAVE_PUBLICA_AQUI` pela **anon public key**.
+> **ATENÇÃO:** Nunca exponha a sua `service_role` ou chave secreta no frontend. A chave *anon public* é segura, pois o banco de dados está protegido por regras de RLS!
 
-1. Faça login no GitHub e crie um novo repositório chamado `fixboard`.
-2. Envie todos os arquivos deste projeto para a branch `main` do seu repositório.
-3. No repositório, acesse **Settings** -> **Pages**.
-4. Em "Source", selecione **Deploy from a branch**.
-5. Selecione a branch `main` e a pasta `/root`.
-6. Salve. Em poucos minutos seu site estará no ar!
+### 3. Criar o Banco de Dados (SQL)
+No painel do Supabase, acesse **SQL Editor** e execute os três arquivos da pasta `supabase/` do projeto na seguinte ordem:
 
-## Como adicionar e editar bugs
+1. **`schema.sql`**: Cria as tabelas, extensões (UUID), e os *triggers* que automaticamente criam perfis quando um usuário se cadastra.
+2. **`policies.sql`**: Ativa e define as regras rigorosas de segurança (RLS - Row Level Security). Ninguém não aprovado poderá ler ou escrever os bugs.
+3. **`seed.sql`**: (Opcional) Migra os 4 bugs iniciais originais para o banco de dados.
 
-**Pela Interface**:
-- Clique em "Novo Bug" no topo da página.
-- Preencha o formulário e clique em Salvar. O bug aparecerá na coluna selecionada (ou em "Reportado" por padrão).
-- Você pode editar clicando no botão de lápis ou visualizar os detalhes clicando sobre o card.
-- **Importante**: Ao editar pela interface, os dados são salvos no `localStorage` do seu navegador para você não perder as alterações.
+### 4. Configurar Autenticação e Redirecionamentos
+1. Vá em `Authentication` -> `URL Configuration`.
+2. Em **Site URL**, coloque a URL base onde seu painel será hospedado (ex: `https://seu-usuario.github.io/fixboard/` ou `http://localhost:8000`).
+3. Adicione também as URLs na aba **Redirect URLs** para permitir login correto.
 
-**Restaurar Dados**:
-- Se quiser recarregar os dados do arquivo JSON e limpar suas modificações locais, clique em "Restaurar dados originais" ou acesse a opção de limpar dados nas configurações.
+## Gerenciamento de Equipe
 
-**Adicionar via Arquivo (Repositório)**:
-- Você pode adicionar bugs no arquivo `data/issues.json` diretamente no repositório. Edite este arquivo para adicionar, alterar status ou modificar qualquer propriedade permanentemente.
-- Para marcar como corrigido, altere a propriedade `"status"` para `"Corrigido"`.
-- A estrutura do JSON é simples e segue o formato das issues originais (ID, título, descrição, status, prioridade, etc).
+### Acessando como Administrador (A primeira vez)
+Por padrão, todo usuário criado tem a função (role) de `viewer` e inicia **bloqueado** (approved = false) por segurança. Para configurar você mesmo como Administrador, rode esse comando no **SQL Editor** do Supabase após ter criado a conta na tela de login:
 
-## Alterando as cores dos status
+```sql
+UPDATE public.profiles
+SET role = 'admin', approved = true, active = true
+WHERE email = 'SEU_EMAIL_AQUI';
+```
 
-As cores dos cards baseadas no status podem ser alteradas diretamente no arquivo `assets/css/style.css`, buscando pelas variáveis de cor correspondentes:
-- Reportado: `--status-reported` (vermelho)
-- Em análise: `--status-analysis` (amarelo)
-- Em correção: `--status-fixing` (azul)
-- Aguardando teste: `--status-testing` (roxo)
-- Corrigido: `--status-fixed` (verde)
-- Fechado: `--status-closed` (cinza)
+A partir daí, ao logar no FixBoard, você verá o ícone de engrenagem da **Equipe** (<i class="fas fa-users-cog"></i>) no cabeçalho. Por lá, você poderá:
+- Aprovar novos usuários que tentaram se cadastrar.
+- Transformar visualizadores em Desenvolvedores (Developers).
+- Banir/Desativar contas.
 
-## Limpar o LocalStorage
+## Publicação no GitHub Pages
 
-Para limpar o armazenamento do navegador (excluindo os dados modificados pela interface):
-- Abra o painel e utilize o botão "Restaurar dados originais".
-- Ou, no navegador, pressione F12 para abrir o DevTools -> Aba **Application** (ou Armazenamento) -> **Local Storage** -> clique com botão direito na URL e selecione **Clear**.
+O site funciona perfeitamente sem processo de build.
+1. Envie todos os arquivos deste projeto para a branch `main` do seu repositório.
+2. No repositório, acesse **Settings** -> **Pages**.
+3. Selecione **Deploy from a branch** e aponte para a `main`, pasta `/root`.
+4. Em poucos minutos seu site estará rodando online conectado ao seu banco de dados na nuvem!
+
+## Informações Adicionais (Segurança)
+
+- **Migração do LocalStorage**: Na versão anterior, usávamos localStorage para salvar bugs. Agora tudo é sincronizado pelo Supabase. Se você tiver dados antigos, será necessário criar manualmente pelo painel (ou via SQL). O localStorage agora é usado *apenas* para manter o tema e sessão.
+- **Service Role**: Nunca faça chamadas usando chaves secretas no JavaScript (`service_role`). As permissões de acesso foram todas escritas em SQL (`policies.sql`) para garantir que os hackers não consigam burlar a interface.
+- **Realtime**: O painel já inclui listeners para tabelas. Se outro desenvolvedor mudar a coluna de um bug, sua tela atualizará automaticamente!
