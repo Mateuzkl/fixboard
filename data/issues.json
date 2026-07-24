@@ -1,0 +1,60 @@
+[
+  {
+    "id": "BUG-001",
+    "title": "Inconsistência na Interface de Comércio com NPCs",
+    "description": "Ao fechar um container, como uma mochila ou janela de inventário, a janela de comércio com o NPC deixa de abrir ou responder corretamente.",
+    "currentBehavior": "Depois que um container é fechado, o sistema de trade do NPC pode deixar de responder.",
+    "expectedBehavior": "Fechar um container não deve interferir na abertura ou utilização da janela de comércio do NPC.",
+    "stepsToReproduce": "1. Abra a janela de trade com um NPC.\n2. Abra um container (ex: mochila).\n3. Feche o container.\n4. Tente interagir com a janela de trade do NPC.",
+    "client": "Astra Client",
+    "category": "Trade / Interface",
+    "priority": "Alta",
+    "status": "Reportado",
+    "tags": ["npc", "trade", "container", "astra-client", "interface"],
+    "particularity": "O comportamento é intermitente e ocorre exclusivamente no Astra Client. Nos demais clientes, a funcionalidade opera normalmente.",
+    "createdAt": "2023-10-24T10:00:00Z",
+    "updatedAt": "2023-10-24T10:00:00Z"
+  },
+  {
+    "id": "BUG-002",
+    "title": "Falha de Privacidade no Canal de Fala dos NPCs",
+    "description": "Quando um jogador inicia uma conversa com um NPC, as mensagens enviadas pelo NPC não ficam restritas ao jogador em atendimento.",
+    "currentBehavior": "Outros jogadores próximos conseguem visualizar todo o diálogo entre o NPC e o jogador.",
+    "expectedBehavior": "As mensagens privadas do NPC devem ser enviadas somente ao jogador que iniciou a conversa, salvo quando a mensagem for intencionalmente pública.",
+    "client": "Todos os clientes",
+    "category": "NPC / Protocolo",
+    "priority": "Alta",
+    "status": "Reportado",
+    "tags": ["npc", "chat", "privacidade", "escopo", "protocolo"],
+    "createdAt": "2023-10-24T11:00:00Z",
+    "updatedAt": "2023-10-24T11:00:00Z"
+  },
+  {
+    "id": "BUG-003",
+    "title": "Restauração do Protocolo de Organização de Outfits",
+    "description": "O código responsável pela ordenação e estruturação dos outfits foi alterado, removido ou perdido durante modificações recentes.",
+    "currentBehavior": "A lista ou estrutura dos outfits pode ser enviada em ordem incorreta ou incompatível com o cliente.",
+    "expectedBehavior": "Restaurar o protocolo original de organização dos outfits, preservando a ordem, addons, mounts, frame groups e demais informações suportadas.",
+    "client": "Servidor / Astra Client",
+    "category": "Outfit / Protocolo",
+    "priority": "Média",
+    "status": "Em análise",
+    "tags": ["outfit", "protocolo", "organização", "addons", "mounts"],
+    "createdAt": "2023-10-24T12:00:00Z",
+    "updatedAt": "2023-10-24T12:00:00Z"
+  },
+  {
+    "id": "BUG-004",
+    "title": "Remoção de Código Redundante sanitizeOutfit",
+    "description": "A função ou filtro sanitizeOutfit encontra-se obsoleto e não oferece uma função prática ou proteção efetiva no estado atual do projeto.",
+    "currentBehavior": "A função adiciona uma camada desnecessária de processamento e aumenta a complexidade do código.",
+    "expectedBehavior": "Remover sanitizeOutfit, revisar todos os pontos de uso e garantir que a remoção não cause regressões no protocolo de outfits.",
+    "client": "Servidor",
+    "category": "Refatoração / Outfit",
+    "priority": "Baixa",
+    "status": "Em análise",
+    "tags": ["sanitizeOutfit", "refatoração", "código-morto", "outfit"],
+    "createdAt": "2023-10-24T13:00:00Z",
+    "updatedAt": "2023-10-24T13:00:00Z"
+  }
+]
