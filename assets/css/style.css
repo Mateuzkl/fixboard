@@ -597,7 +597,7 @@ label {
     font-weight: 500;
 }
 
-input[type="text"], textarea {
+input[type="text"], input[type="email"], input[type="password"], textarea {
     padding: 8px 12px;
     background-color: var(--bg-header);
     border: 1px solid var(--border-color);
