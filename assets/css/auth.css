@@ -87,6 +87,7 @@
     width: 100%;
     padding-left: 35px;
     background-color: var(--bg-main);
+    color: var(--text-primary) !important;
 }
 
 .form-options {
