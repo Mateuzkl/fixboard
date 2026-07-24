@@ -78,12 +78,12 @@ async function saveIssueToDB(issueData, id = null) {
 
         if (isNew) {
             payload.created_by = profile.id;
-            const { data, error } = await supabase.from('issues').insert(payload).select().single();
+            const { data, error } = await supabaseClient.from('issues').insert(payload).select().single();
             if (error) throw error;
             savedIssue = data;
             await logHistory(savedIssue.id, 'created', null, null, null);
         } else {
-            const { data, error } = await supabase.from('issues').update(payload).eq('id', id).select().single();
+            const { data, error } = await supabaseClient.from('issues').update(payload).eq('id', id).select().single();
             if (error) throw error;
             savedIssue = data;
             await logHistory(savedIssue.id, 'updated', null, null, null);
@@ -92,11 +92,11 @@ async function saveIssueToDB(issueData, id = null) {
         // Handle tags
         if (issueData.tags && Array.isArray(issueData.tags)) {
             // Remove old tags
-            await supabase.from('issue_tags').delete().eq('issue_id', savedIssue.id);
+            await supabaseClient.from('issue_tags').delete().eq('issue_id', savedIssue.id);
             // Insert new tags
             if (issueData.tags.length > 0) {
                 const tagsPayload = issueData.tags.map(t => ({ issue_id: savedIssue.id, tag: t }));
-                await supabase.from('issue_tags').insert(tagsPayload);
+                await supabaseClient.from('issue_tags').insert(tagsPayload);
             }
         }
 
@@ -119,7 +119,7 @@ async function updateStatusInDB(id, newStatus, previousStatus) {
             payload.resolved_at = null; // Un-resolve if changed back
         }
 
-        const { error } = await supabase.from('issues').update(payload).eq('id', id);
+        const { error } = await supabaseClient.from('issues').update(payload).eq('id', id);
         if (error) throw error;
         
         await logHistory(id, 'status_changed', 'status', previousStatus, newStatus);
@@ -136,7 +136,7 @@ async function updateStatusInDB(id, newStatus, previousStatus) {
 
 async function addComment(issueId, content) {
     try {
-        const { error } = await supabase.from('comments').insert({
+        const { error } = await supabaseClient.from('comments').insert({
             issue_id: issueId,
             author_id: window.appState.profile.id,
             content: content
@@ -180,7 +180,7 @@ async function fetchHistory(issueId) {
 }
 
 async function logHistory(issueId, action, field, oldVal, newVal) {
-    const { error } = await supabase.from('issue_history').insert({
+    const { error } = await supabaseClient.from('issue_history').insert({
         issue_id: issueId,
         user_id: window.appState.profile.id,
         action: action,
@@ -194,10 +194,10 @@ async function logHistory(issueId, action, field, oldVal, newVal) {
 // Realtime
 function setupRealtime() {
     if (realtimeChannel) {
-        supabase.removeChannel(realtimeChannel);
+        supabaseClient.removeChannel(realtimeChannel);
     }
 
-    realtimeChannel = supabase.channel('public:issues')
+    realtimeChannel = supabaseClient.channel('public:issues')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'issues' }, payload => {
             console.log('Realtime change received!', payload);
             loadDatabaseIssues(); // simple approach: reload on change

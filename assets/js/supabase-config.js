@@ -6,7 +6,7 @@ const SUPABASE_URL = 'https://nbmeyglqkuxmqryvoezq.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_blueytj6P4NHsN-9Xrsy7w_2NcKXm-z';
 
 // Initialize Supabase client
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 // Helper state
 window.appState = {

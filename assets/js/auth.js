@@ -10,7 +10,7 @@ async function checkInitialSession() {
     const isLoginPage = window.location.pathname.endsWith('login.html');
     
     // Get current session
-    const { data: { session }, error } = await supabase.auth.getSession();
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
     
     if (error) {
         console.error('Erro ao verificar sessão:', error);
@@ -80,7 +80,7 @@ function setupAuthListeners() {
     if (authListenerSet) return;
     authListenerSet = true;
 
-    supabase.auth.onAuthStateChange(async (event, session) => {
+    supabaseClient.auth.onAuthStateChange(async (event, session) => {
         const isLoginPage = window.location.pathname.endsWith('login.html');
         
         if (event === 'SIGNED_IN') {
@@ -140,7 +140,7 @@ async function doLogin() {
     loadingIcon.classList.remove('hidden');
     btnText.textContent = 'Entrando...';
     
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
         email: email,
         password: password
     });
@@ -165,7 +165,7 @@ async function doRegister() {
         return;
     }
     
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await supabaseClient.auth.signUp({
         email: email,
         password: password
     });
@@ -179,7 +179,7 @@ async function doRegister() {
 }
 
 async function doLogout() {
-    const { error } = await supabase.auth.signOut();
+    const { error } = await supabaseClient.auth.signOut();
     if (error) {
         console.error('Erro ao sair:', error);
     }

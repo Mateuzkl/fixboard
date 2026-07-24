@@ -76,7 +76,7 @@ async function loadUsersTable() {
 
 async function approveUser(id) {
     if(!confirm('Tem certeza que deseja aprovar este usuário?')) return;
-    const { error } = await supabase.from('profiles').update({ approved: true }).eq('id', id);
+    const { error } = await supabaseClient.from('profiles').update({ approved: true }).eq('id', id);
     if (error) showToast('Erro ao aprovar.', 'error');
     else { showToast('Usuário aprovado!', 'success'); loadUsersTable(); }
 }
@@ -84,14 +84,14 @@ async function approveUser(id) {
 async function toggleActive(id, isActive) {
     const action = isActive ? 'ativar' : 'desativar';
     if(!confirm(`Tem certeza que deseja ${action} este usuário?`)) return;
-    const { error } = await supabase.from('profiles').update({ active: isActive }).eq('id', id);
+    const { error } = await supabaseClient.from('profiles').update({ active: isActive }).eq('id', id);
     if (error) showToast('Erro ao atualizar status ativo.', 'error');
     else { showToast('Status atualizado!', 'success'); loadUsersTable(); }
 }
 
 async function changeRole(id, newRole) {
     if(!confirm(`Mudar função deste usuário para ${newRole}?`)) return;
-    const { error } = await supabase.from('profiles').update({ role: newRole }).eq('id', id);
+    const { error } = await supabaseClient.from('profiles').update({ role: newRole }).eq('id', id);
     if (error) showToast('Erro ao mudar função.', 'error');
     else { showToast('Função atualizada!', 'success'); loadUsersTable(); }
 }
