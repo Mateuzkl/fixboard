@@ -329,7 +329,7 @@ function setupAppListeners() {
         const dbId = document.getElementById('modal-details').dataset.dbId;
         const issue = issues.find(i => i.id === dbId);
         if(issue) {
-            const { error } = await supabase.from('issues').update({ assignee_id: window.appState.profile.id }).eq('id', dbId);
+            const { error } = await supabaseClient.from('issues').update({ assignee_id: window.appState.profile.id }).eq('id', dbId);
             if(!error) {
                 await logHistory(dbId, 'assigned', 'assignee_id', null, window.appState.profile.id);
                 loadDatabaseIssues();

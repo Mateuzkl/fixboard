@@ -13,7 +13,7 @@ async function initBoard() {
 
 async function loadDatabaseIssues() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('issues')
             .select(`
                 *,
@@ -152,7 +152,7 @@ async function addComment(issueId, content) {
 }
 
 async function fetchComments(issueId) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('comments')
         .select('*, author:profiles(display_name)')
         .eq('issue_id', issueId)
@@ -166,7 +166,7 @@ async function fetchComments(issueId) {
 }
 
 async function fetchHistory(issueId) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('issue_history')
         .select('*, user:profiles(display_name)')
         .eq('issue_id', issueId)

@@ -29,7 +29,7 @@ async function handleAuthenticated(user, isLoginPage) {
     window.appState.user = user;
     
     // Fetch profile
-    const { data: profile, error } = await supabase
+    const { data: profile, error } = await supabaseClient
         .from('profiles')
         .select('*')
         .eq('id', user.id)

@@ -22,7 +22,7 @@ async function loadUsersTable() {
     const tbody = document.getElementById('users-tbody');
     tbody.innerHTML = '<tr><td colspan="6">Carregando usuários...</td></tr>';
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('profiles')
         .select('*')
         .order('created_at', { ascending: false });
