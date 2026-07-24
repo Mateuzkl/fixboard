@@ -202,7 +202,11 @@ function hideLoading() {
 function showError(msg) {
     const el = document.getElementById('auth-error-msg');
     if (el) {
-        el.textContent = msg;
+        let displayMsg = msg;
+        if (typeof msg === 'object') {
+            displayMsg = msg.message || msg.error_description || JSON.stringify(msg);
+        }
+        el.textContent = displayMsg || 'Erro de autenticação';
         el.classList.remove('hidden');
     }
 }
